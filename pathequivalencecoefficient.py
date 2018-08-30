@@ -196,7 +196,60 @@ del pfc_linfields_nonan
 #Compute Pearson r for all ltrajectories for each cell
 epochlist = [1, 3, 5, 7, 9, 11, 13, 15]
 
+pec = {'ep1':[],'ep3':[],'ep5':[],'ep7':[],'ep9':[],'ep11':[],'ep13':[],'ep15':[]}
 for ep in epochlist:
+    for f in fixed_pfc_linfields:
+        rvals = []
+        pvals = []
+        t = f['Tetrode']
+        c = f['Cell']
+        e = f['Epoch']
+        if f['Epoch'] == ep:
+            r, p = pearsonr(f['inleft'], f['inright'])
+            rvals.append(r)
+            pvals.append(p)
+            r, p = pearsonr(f['inleft'], f['outleft'])
+            rvals.append(r)
+            pvals.append(p)
+            r, p = pearsonr(f['inleft'], f['outright'])
+            rvals.append(r)
+            pvals.append(p)
+            r, p = pearsonr(f['inright'], f['outleft'])
+            rvals.append(r)
+            pvals.append(p)
+            r, p = pearsonr(f['inright'], f['outright'])
+            rvals.append(r)
+            pvals.append(p)
+            r, p = pearsonr(f['outleft'], f['outright'])
+            rvals.append(r)
+            pvals.append(p)
+            
+            maxr = max(rvals)
+            maxp = max(pvals)
+            
+            f['rvalues'] = rvals
+            f['pvalues'] = pvals
+            f['maxp'] = maxp
+            f['maxr'] = maxr
+            rmean = np.mean(rvals)
+            if rmean > 0: #some positive degree of path equiv
+                pec['ep' + str(ep)].append(rmean)
+            else:
+                continue
+        else:
+            continue
+        
     
 
-#corr = pearsonr(aa, bb)
+
+
+
+
+
+
+
+
+
+
+
+
